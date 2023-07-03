@@ -1,0 +1,20 @@
+### Pycharm ###
+.idea/
+
+### Django ###
+*.log
+__pycache__/
+
+## macOS ##
+*.DS_Store
+
+### Jupyter notebook ###
+*.ipynb_checkpoints
+
+## PDF ##
+*.pdf
+
+### pyenv & pipenv ###
+*.python-version
+Pipfile
+Pipfile.lock
