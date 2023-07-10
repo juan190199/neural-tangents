@@ -23,3 +23,11 @@ def choose_random_idxs(key, dataset, num_points=2):
     num_samples = dataset.shape[0]
     idxs = random.choice(key, num_samples, shape=(num_points, ), replace=False)
     return idxs
+
+
+def calculate_accuracy(predicted, ground_truth):
+    correct = np.sum(predicted == ground_truth)
+    total = len(ground_truth)
+    # Calculate accuracy
+    accuracy = correct / total
+    return accuracy
