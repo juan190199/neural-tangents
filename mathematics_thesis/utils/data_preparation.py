@@ -1,25 +1,28 @@
 import numpy as np
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 
-def process_data(data_chunk, to_continuous=False):
-    """
-    Flatten the images and one-hot encode the labels.
-    Args:
-        data_chunk:
-
-    Returns:
-
-    """
-    image, label = data_chunk['image'], data_chunk['label']
-
-    samples = image.shape[0]
-    image = np.array(np.reshape(image, (samples, -1)), dtype=np.float32)
-    image = (image - np.mean(image)) / np.std(image)
+def preprocess_data(train_data, test_data, to_continuous=False):
+    scaler = StandardScaler()
 
     if to_continuous:
-        label = label/np.max(label)
-        label = (label - np.mean(label)) / np.std(label)
-    else:
-        label = np.eye(10)[label]
+        train_data_processed = scaler.fit_transform(train_data)
+        test_data_processed = scaler.transform(test_data)
 
-    return {'image': image, 'label': label}
+        return train_data_processed[:, :-1], test_data_processed[:, :-1], \
+            train_data_processed[:, -1].reshape((-1, 1)), test_data_processed[:, -1].reshape((-1, 1))
+    else:
+        # Use OneHotEncoder for the target values
+        encoder = OneHotEncoder(sparse=False)
+
+        train_data_processed = scaler.fit_transform(train_data[:, :-1])
+        test_data_processed = scaler.transform(test_data[:, :-1])
+
+        train_target = train_data[:, -1].reshape((-1, 1))
+        train_target_encoded = encoder.fit_transform(train_target)
+
+        test_target = test_data[:, -1].reshape((-1, 1))
+        test_target_encoded = encoder.transform(test_target)
+
+        return train_data_processed, test_data_processed, train_target_encoded, test_target_encoded
